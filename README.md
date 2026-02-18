@@ -19,8 +19,9 @@ Fi  ne-tuned and compared three models. Although **BERT** achieved the highest a
 2. **`predict_emotion.py`**:
    - Real-world application.
    - Uses **Apify** to scrape Instagram captions and predicts the emotion for each post.
-   ![Demo](image.png)
-   ![Post](post.png)
+
+
+   ![Demo](images/image.png)
 
 3. **Notebooks**:
    - `emotion classification.ipynb`: Data analysis & fine-tuning implementation.
