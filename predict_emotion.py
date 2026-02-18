@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 import torch
+from typing import Optional, Tuple
 
 # Load environment variables
 load_dotenv()
@@ -11,7 +12,7 @@ load_dotenv()
 EMOTIONS = ['sadness', 'joy', 'love', 'anger', 'fear', 'surprise']
 
 class EmotionPredictor:
-    def __init__(self, model_path="emotion-finetune-distilbert"):
+    def __init__(self, model_path: str = "emotion-finetune-distilbert"):
         """Initialize the emotion prediction model"""
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         print(f"Using device: {self.device}")
@@ -21,7 +22,7 @@ class EmotionPredictor:
         self.tokenizer = AutoTokenizer.from_pretrained(model_path)
         self.model.eval()
         
-    def predict_emotion(self, text):
+    def predict_emotion(self, text: str) -> Tuple[Optional[str], Optional[float]]:
         """Predict emotion from text"""
         if not text or text.strip() == "":
             return None, None
@@ -47,8 +48,9 @@ class InstagramScraper:
             raise ValueError("APIFY_API_TOKEN not found in environment variables")
         self.client = ApifyClient(api_token)
     
-    def scrape_post(self, instagram_url):
+    def scrape_post(self, instagram_url: str) -> Optional[str]:
         """Scrape Instagram post caption"""
+        # The actor uses 'username' parameter but accepts URLs in standard practice for this actor
         run_input = {
             "username": [instagram_url],
             "resultsLimit": 1,
@@ -61,9 +63,10 @@ class InstagramScraper:
         
         # Fetch results
         captions = []
-        for item in self.client.dataset(run["defaultDatasetId"]).iterate_items():
-            if 'caption' in item:
-                captions.append(item['caption'])
+        if run:
+            for item in self.client.dataset(run["defaultDatasetId"]).iterate_items():
+                if 'caption' in item:
+                    captions.append(item['caption'])
         
         return captions[0] if captions else None
 
@@ -80,12 +83,14 @@ def main():
         caption = scraper.scrape_post(instagram_url)
         
         if caption:
+            print()
             print(f"Caption: {caption}")
-  
+
             # Predict emotion
             emotion, confidence = predictor.predict_emotion(caption)
             
-            if emotion:
+            if emotion and confidence is not None:
+                print() 
                 print(f"Predicted Emotion: {emotion}")
                 print(f"Confidence: {confidence:.2%}")
             else:
