@@ -3,7 +3,7 @@
 This project fine-tunes transformer models on the **dair-ai/emotion** dataset to classify text into 6 emotions: *Sadness, Joy, Love, Anger, Fear, Surprise*.
 
 ## Model Comparison (2 Epochs)
-Fi  ne-tuned and compared three models. Although **BERT** achieved the highest accuracy, **DistilBERT** was selected for the final implementation due to speed and smaller size with minimal performance tradeoff.
+Fine-tuned and compared three models. Although **BERT** achieved the highest accuracy, **DistilBERT** was selected for the final implementation due to speed and smaller size with minimal performance tradeoff.
 
 | Model | Accuracy | F1 Score | Loss | Note |
 | :--- | :--- | :--- | :--- | :--- |
